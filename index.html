@@ -38,6 +38,10 @@
     background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:3px 3px}
   /* corner brackets that draw in on load */
   .frame{position:fixed;inset:16px;z-index:3;pointer-events:none}
+  /* scroll-progress bar — thin gold line filling as you scroll */
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:60;pointer-events:none;
+    background:linear-gradient(90deg,var(--gold),var(--gold-2));
+    box-shadow:0 0 12px rgba(232,177,76,.5)}
   .frame i{position:absolute;width:22px;height:22px;border:1.5px solid var(--line2)}
   .frame i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0}
   .frame i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0}
@@ -173,6 +177,7 @@
 </head>
 <body>
 
+<div id="progress" aria-hidden="true"></div>
 <div class="ambient"></div>
 <div class="grain"></div>
 <div class="frame"><i></i><i></i><i></i><i></i></div>
@@ -279,6 +284,11 @@
   // nav shade
   const nav=document.getElementById('nav');
   addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>24),{passive:true});
+
+  // scroll-progress bar
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;
+    prog.style.width=(max>0?Math.min(100,scrollY/max*100):0)+'%';},{passive:true});
 
   // reveal + count-up + allocation bars on view
   const io=new IntersectionObserver(es=>es.forEach(e=>{
